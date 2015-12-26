@@ -188,7 +188,7 @@ module.exports = function (db) {
 		});
 	}
 
-	this.deleteRoom = function (roomId, callback) {
+	this.deleteRoom = function (roomId, callback, callback2) {
 		db.open(function (err, db) {
 			db.collection(questionColName, function (err,  col) {
 				col.remove({roomId: roomId}, function (err, result) {
@@ -201,5 +201,10 @@ module.exports = function (db) {
 				})
 			});
 		});
+
+		if(roomId in rooms) {
+			rooms[roomId].observers.forEach(callback2);
+			delete rooms[roomId];
+		}
 	}
 }

@@ -9,10 +9,11 @@
 <body>
 
 <div data-ng-app="qna-admin" data-ng-controller="main">
-	<div id="secret-key-form" data-ng-hide="hasSecretKey()">
-		<input type="text" id="secret-key-field" />
+	<fieldset id="secret-key-form" data-ng-hide="hasSecretKey()">
+		<legend>You need a secret key!</legend>
+		<input type="text" id="secret-key-field" placeholder="Secret Key" />
 		<button id="submit-key-btn">Submit</button>
-	</div>
+	</fieldset>
 	<button data-ng-show="hasSecretKey()" data-ng-click="disconnect()">Disconnect</button>
 	<fieldset id="add-room-form" data-ng-show="hasSecretKey()">
 		<legend>Add a room</legend>

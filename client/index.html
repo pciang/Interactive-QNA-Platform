@@ -9,18 +9,21 @@
 <body>
 
 <div data-ng-app="qna" data-ng-controller="main">
-	<div id="login-form" data-ng-show="!isConnected()">
+	<fieldset id="login-form" data-ng-show="!isConnected()">
+		<legend>Connect to a room</legend>
 		<input type="text" id="username-field" placeholder="Username" />
 		<input type="text" id="room-id-field" placeholder="Room ID" />
 		<button id="connect-btn">Connect</button>
-	</div>
+	</fieldset>
 	<button id="disconnect-btn" data-ng-show="isConnected()" data-ng-click="disconnect()">Disconnect</button>
 
-	<div id="add-question-form" data-ng-show="enableAddQuestion">
+	<fieldset id="add-question-form" data-ng-show="enableAddQuestion">
+		<legend>Add a question</legend>
 		<input type="text" id="question-field" placeholder="Question?" />
 		<button id="add-question-btn">Add Question</button>
-	</div>
-	<div id="question-list">
+	</fieldset>
+	<fieldset id="question-list">
+		<legend>Question(s) asked</legend>
 		<li data-ng-repeat="qn in questionList | orderBy: 'upvoters.length - downvoters.length':true">
 			<span>{{ qn.body }}</span>
 			<span style="color: {{ countUpvotes(qn) > 0 ? 'green' : 'gray' }}">
@@ -30,7 +33,7 @@
 			<button data-ng-show="hasDownvote()" data-ng-click="downvote(qn.roomId, qn._id)">-1</button>
 			<span><sub>asked by: {{ qn.asker }}</sub></span>
 		</li>
-	</div>
+	</fieldset>
 </div>
 
 </body>

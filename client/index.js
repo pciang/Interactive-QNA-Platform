@@ -187,7 +187,6 @@ var qna = function () {
 	};
 
 	var onmessage = function (event) {
-		console.log(event.data);
 		var msgObj = JSON.parse(event.data),
 			content = msgObj.content;
 

@@ -157,7 +157,7 @@ var admin = function () {
 		var msgObj = JSON.parse(event.data),
 			content = msgObj.content;
 
-		console.log(msgObj);
+		// console.log(msgObj);
 		switch(msgObj.type) {
 			case msgType.UNFILTERED_QN_LIST:
 				addQuestions(content);

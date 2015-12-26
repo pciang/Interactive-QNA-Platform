@@ -96,6 +96,8 @@ function serveAdmin(ws) {
 							txtMsg = "Room \"" + content + "\" is not successfully deleted!";
 						}
 						send(ws, msgType.CREATE_ROOM, txtMsg);
+					}, function (ws) {
+						ws.close(wsCloseCode, "Room has been deleted!");
 					});
 					break;
 				default:
