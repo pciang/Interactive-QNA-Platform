@@ -72,23 +72,19 @@ var qna = function () {
 	};
 
 	var upvote = function (ngScope, roomId, questionId) {
-		if(isConnected()) {
-			send(msgType.UPVOTE, {
-				username: currentUsername,
-				roomId: roomId,
-				questionId: questionId
-			});
-		}
+		send(msgType.UPVOTE, {
+			username: currentUsername,
+			roomId: roomId,
+			questionId: questionId
+		});
 	};
 
 	var downvote = function (ngScope, roomId, questionId) {
-		if(isConnected()) {
-			send(msgType.DOWNVOTE, {
-				username: currentUsername,
-				roomId: roomId,
-				questionId: questionId
-			});
-		}
+		send(msgType.DOWNVOTE, {
+			username: currentUsername,
+			roomId: roomId,
+			questionId: questionId
+		});
 	};
 
 	var upvoteQuestion = function (ngScope, questionId, username) {
@@ -191,6 +187,7 @@ var qna = function () {
 	};
 
 	var onmessage = function (event) {
+		console.log(event.data);
 		var msgObj = JSON.parse(event.data),
 			content = msgObj.content;
 
@@ -248,7 +245,9 @@ var qna = function () {
 				type: type,
 				content: content
 			}));
+			return true;
 		}
+		return false;
 	}
 
 	var sendQuestion = function (questionBody) {

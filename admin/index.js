@@ -13,6 +13,12 @@ var admin = function () {
 		enableAdminTools = enableAdminTools.bind(undefined, $scope);
 
 		addQuestions = addQuestions.bind(undefined, $scope);
+		addQuestion = addQuestion.bind(undefined, $scope);
+
+		$scope.approveQuestion = approveQuestion.bind(undefined, $scope);
+		$scope.deleteQuestion = deleteQuestion.bind(undefined, $scope);
+
+		removeConcern = removeConcern.bind(undefined, $scope);
 	});
 
 	// ng hacks
@@ -31,6 +37,30 @@ var admin = function () {
 		ngScope.questionList = ngScope.questionList.concat(questionList);
 		ngScope.$apply();
 	}
+
+	var addQuestion = function (ngScope, question) {
+		ngScope.questionList.push(question);
+		ngScope.$apply();
+	}
+
+	var approveQuestion = function (ngScope, questionId) {
+		send(msgType.APPROVE_QN, questionId);
+	}
+
+	var deleteQuestion = function (ngScope, questionId) {
+		send(msgType.DELETE_QN, questionId);
+	}
+
+	var removeConcern = function (ngScope, questionId) {
+		var questionList = ngScope.questionList;
+		for(var i = 0, size = questionList.length; i < size; ++i) {
+			if(questionList[i]._id == questionId) {
+				questionList.splice(i, 1);
+				ngScope.$apply();
+				return;
+			}
+		}
+	}
 	// end of hacks
 
 	var secretKeyPattern = /.{6,}/;
@@ -45,8 +75,29 @@ var admin = function () {
 			UNFILTERED_QN_LIST: 10,
 			SEND_UNFILTERED_QN: 11,
 			APPROVE_QN: 12,
-			DELETE_QN: 13
+			DELETE_QN: 13,
+			CREATE_ROOM: 14,
+			DELETE_ROOM: 15
+		};
+
+	var send = function (type, content) {
+		if(isConnected()) {
+			connection.send(JSON.stringify({
+				type: type,
+				content: content
+			}));
+			return true;
 		}
+		return false;
+	}
+
+	var isConnected = function () {
+		if(connection == null) {
+			return false;
+		}
+
+		return connection.readyState == 1;
+	};
 
 	var connect = function (secretKey) {
 		if(!secretKeyPattern.test(secretKey)) {
@@ -89,10 +140,19 @@ var admin = function () {
 				addQuestions(content);
 				break;
 			case msgType.SEND_UNFILTERED_QN:
+				addQuestion(content);
 				break;
 			case msgType.APPROVE_QN:
+				removeConcern(content);
 				break;
 			case msgType.DELETE_QN:
+				removeConcern(content);
+				break;
+			case msgType.CREATE_ROOM:
+				alert(content);
+				break;
+			case msgType.DELETE_ROOM:
+				alert(content);
 				break;
 			default:
 				// ignore
@@ -116,7 +176,8 @@ var admin = function () {
 
 	return {
 		connect: connect,
-		disconnect: disconnect
+		disconnect: disconnect,
+		isConnected: isConnected
 	};
 }();
 

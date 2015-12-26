@@ -23,9 +23,9 @@
 	<div id="question-lister" data-ng-show="hasSecretKey()">
 		<li data-ng-repeat="qn in questionList">
 			<span>{{ qn.body }}</span>
-			<button data-ng-click="approve(qn._id)">Approve</button>
-			<button data-ng-click="delete(qn._id)">Delete</button>
-			<span><sub>asked by {{ qn.asker }}</sub></span>
+			<button data-ng-click="approveQuestion(qn._id)">Approve</button>
+			<button data-ng-click="deleteQuestion(qn._id)">Delete</button>
+			<span><sub>asked by {{ qn.asker }} at room {{ qn.roomId }}</sub></span>
 		</li>
 	</div>
 </div>

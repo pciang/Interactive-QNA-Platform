@@ -43,4 +43,8 @@ module.exports = function (db) {
 		var idx = admins.indexOf(ws);
 		admins.splice(idx, 1);
 	}
+
+	this.notifyAll = function (callback) {
+		admins.forEach(callback);
+	}
 };

@@ -12,7 +12,9 @@ var Db = require('mongodb').Db,
 var RoomController = require('./lib/room-controller.js'),
 	roomController = new RoomController(db),
 	AdminController = require('./lib/admin-controller.js'),
-	adminController = new AdminController(db);
+	adminController = new AdminController(db),
+	QuestionController = require('./lib/question-controller.js'),
+	questionController = new QuestionController(db);
 
 var wsCloseCode = 1000;
 
@@ -26,7 +28,9 @@ var msgType = {
 	UNFILTERED_QN_LIST: 10,
 	SEND_UNFILTERED_QN: 11,
 	APPROVE_QN: 12,
-	DELETE_QN: 13
+	DELETE_QN: 13,
+	CREATE_ROOM: 14,
+	DELETE_ROOM: 15
 };
 
 function send(ws, type, content) {
@@ -48,6 +52,57 @@ function serveAdmin(ws) {
 	adminController.retrieveAll(function (questionList) {
 		adminController.addAdmin(ws);
 		send(ws, msgType.UNFILTERED_QN_LIST, questionList);
+
+		ws.on('message', function (msgStr) {
+			var msgObj = JSON.parse(msgStr),
+				content = msgObj.content;
+
+			switch(msgObj.type) {
+				case msgType.APPROVE_QN:
+					questionController.approveQuestion(content, function (qnObj) {
+						adminController.notifyAll(function (ws) {
+							send(ws, msgType.APPROVE_QN, content);
+						});
+
+						roomController.broadcast(qnObj.roomId, function (ws) {
+							send(ws, msgType.SEND_QN, qnObj);
+						});
+					});
+					break;
+				case msgType.DELETE_QN:
+					questionController.deleteQuestion(content, function (success) {
+						if(!success) {
+							return;
+						}
+
+						adminController.notifyAll(function (ws) {
+							send(ws, msgType.DELETE_QN, content);
+						});
+					});
+					break;
+				case msgType.CREATE_ROOM:
+					roomController.createRoom(content, function (success) {
+						var txtMsg = "Room \"" + content + "\" is successfully created!";
+						if(!success) {
+							txtMsg = "Room \"" + content + "\" is not successfully created!";
+						}
+						send(ws, msgType.CREATE_ROOM, txtMsg);
+					});
+					break;
+				case msgType.DELETE_ROOM:
+					roomController.deleteRoom(content, function (success) {
+						var txtMsg = "Room \"" + content + "\" is successfully deleted!";
+						if(!success) {
+							txtMsg = "Room \"" + content + "\" is not successfully deleted!";
+						}
+						send(ws, msgType.CREATE_ROOM, txtMsg);
+					});
+					break;
+				default:
+					// ignore message
+					break;
+			}
+		});
 	});
 }
 
@@ -98,7 +153,10 @@ wss.on('connection' , function (ws) {
 											send(ws, msgType.SEND_QN, content);
 										});
 									} else {
-										// TODO: Notify admin
+										// notify all online admin
+										adminController.notifyAll(function (ws) {
+											send(ws, msgType.SEND_UNFILTERED_QN, content);
+										});
 									}
 								});
 								break;

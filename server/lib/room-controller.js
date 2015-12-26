@@ -57,13 +57,20 @@ module.exports = function (db) {
 				db.collection(roomColName, function (err, col) {
 					col.findOne({id: roomId}, function (err, document) {
 						db.close();
-						rooms[roomId].settings = document.settings;
+
+						rooms[roomId].settings = document.settings; // set the room settings
+						rooms[roomId].observers.push(ws); // insert the first observer
+
 						callback(true);
 					});
 				});
 			});
+			return;
 		}
+
+		// room exists already
 		rooms[roomId].observers.push(ws);
+		callback(true);
 	}
 
 	this.removeObserver = function (roomId, ws) {
@@ -77,7 +84,7 @@ module.exports = function (db) {
 	}
 
 	this.broadcast = function (roomId, callback) {
-		rooms[roomId].observers.forEach(callback.bind(undefined));
+		rooms[roomId].observers.forEach(callback);
 	}
 
 	this.addQuestion = function (qnObj, callback) {
@@ -160,5 +167,35 @@ module.exports = function (db) {
 				});
 			});
 		})
+	}
+
+	this.createRoom = function (roomId, callback) {
+		db.open(function (err, db) {
+			db.collection(roomColName, function (err, col) {
+				col.findOne({id: roomId}, function (err, document) {
+					if(document == null) {
+						col.insertOne({id: roomId}, function (err, result) {
+							db.close();
+							callback(result.result.ok == 1);
+						});
+						return;
+					}
+
+					db.close();
+					callback(false);
+				});
+			});
+		});
+	}
+
+	this.deleteRoom = function (roomId, callback) {
+		db.open(function (err, db) {
+			db.collection(roomColName, function (err, col) {
+				col.remove({id: roomId}, {single: true}, function (err, result) {
+					db.close();
+					callback(result.result.ok == 1);
+				});
+			});
+		});
 	}
 }
