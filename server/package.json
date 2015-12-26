@@ -1,0 +1,17 @@
+{
+  "name": "interactive-qna",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pciang",
+  "license": "ISC",
+  "dependencies": {
+    "kerberos": "0.0.17",
+    "mongodb": "^2.1.2",
+    "ws": "^0.8.1"
+  },
+  "devDependencies": {},
+  "description": ""
+}
