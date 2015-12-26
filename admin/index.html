@@ -14,20 +14,27 @@
 		<button id="submit-key-btn">Submit</button>
 	</div>
 	<button data-ng-show="hasSecretKey()" data-ng-click="disconnect()">Disconnect</button>
-	<div id="add-room-form" data-ng-show="hasSecretKey()">
-		<input type="text" id="room-id-field" /><br />
-		<input type="checkbox" id="has-downvote-chkbox" /><span>Has downvote</span><br />
-		<input type="checkbox" id="admin-filter-chkbox" /><span>Admin filter</span><br />
-		<button id="add-room-btn">Create Room</button>
-	</div>
-	<div id="question-lister" data-ng-show="hasSecretKey()">
+	<fieldset id="add-room-form" data-ng-show="hasSecretKey()">
+		<legend>Add a room</legend>
+		<input type="text" id="room-id-field" data-ng-model="roomId" placeholder="Room ID" /><br />
+		<input type="checkbox" id="has-downvote-chkbox" data-ng-model="hasDownvote" data-ng-init="hasDownvote=false" data-ng-true-value="true" data-ng-false-value="false" /><span>Has downvote</span><br />
+		<input type="checkbox" id="admin-filter-chkbox" data-ng-model="adminFilter" data-ng-init="adminFilter=false" data-ng-true-value="true" data-ng-false-value="false" /><span>Admin filter</span><br />
+		<button id="add-room-btn" data-ng-click="createRoom()">Create Room</button>
+	</fieldset>
+	<fieldset id="delete-room-form" data-ng-show="hasSecretKey()">
+		<legend>Delete a room</legend>
+		<input type="text" id="remove-room-field" data-ng-model="roomId2" placeholder="Room ID" />
+		<button id="remove-room-btn" data-ng-click="deleteRoom()">Delete Room</button>
+	</fieldset>
+	<fieldset id="question-lister" data-ng-show="hasSecretKey()">
+		<legend>Unapproved question(s)</legend>
 		<li data-ng-repeat="qn in questionList">
 			<span>{{ qn.body }}</span>
 			<button data-ng-click="approveQuestion(qn._id)">Approve</button>
 			<button data-ng-click="deleteQuestion(qn._id)">Delete</button>
 			<span><sub>asked by {{ qn.asker }} at room {{ qn.roomId }}</sub></span>
 		</li>
-	</div>
+	</fieldset>
 </div>
 
 </body>

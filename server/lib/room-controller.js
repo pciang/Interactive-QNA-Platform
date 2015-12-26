@@ -169,12 +169,12 @@ module.exports = function (db) {
 		})
 	}
 
-	this.createRoom = function (roomId, callback) {
+	this.createRoom = function (roomObj, callback) {
 		db.open(function (err, db) {
 			db.collection(roomColName, function (err, col) {
-				col.findOne({id: roomId}, function (err, document) {
+				col.findOne({id: roomObj.id}, function (err, document) {
 					if(document == null) {
-						col.insertOne({id: roomId}, function (err, result) {
+						col.insertOne(roomObj, function (err, result) {
 							db.close();
 							callback(result.result.ok == 1);
 						});
@@ -190,11 +190,15 @@ module.exports = function (db) {
 
 	this.deleteRoom = function (roomId, callback) {
 		db.open(function (err, db) {
-			db.collection(roomColName, function (err, col) {
-				col.remove({id: roomId}, {single: true}, function (err, result) {
-					db.close();
-					callback(result.result.ok == 1);
-				});
+			db.collection(questionColName, function (err,  col) {
+				col.remove({roomId: roomId}, function (err, result) {
+					db.collection(roomColName, function (err, col) {
+						col.remove({id: roomId}, {single: true}, function (err, result) {
+							db.close();
+							callback(result.result.n > 0);
+						});
+					});
+				})
 			});
 		});
 	}

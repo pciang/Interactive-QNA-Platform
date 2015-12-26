@@ -82,9 +82,9 @@ function serveAdmin(ws) {
 					break;
 				case msgType.CREATE_ROOM:
 					roomController.createRoom(content, function (success) {
-						var txtMsg = "Room \"" + content + "\" is successfully created!";
+						var txtMsg = "Room \"" + content.id + "\" is successfully created!";
 						if(!success) {
-							txtMsg = "Room \"" + content + "\" is not successfully created!";
+							txtMsg = "Room \"" + content.id + "\" is not successfully created!";
 						}
 						send(ws, msgType.CREATE_ROOM, txtMsg);
 					});

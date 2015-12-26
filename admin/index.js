@@ -19,6 +19,9 @@ var admin = function () {
 		$scope.deleteQuestion = deleteQuestion.bind(undefined, $scope);
 
 		removeConcern = removeConcern.bind(undefined, $scope);
+
+		$scope.createRoom = createRoom.bind(undefined, $scope);
+		$scope.deleteRoom = deleteRoom.bind(undefined, $scope);
 	});
 
 	// ng hacks
@@ -60,6 +63,26 @@ var admin = function () {
 				return;
 			}
 		}
+	}
+
+	var createRoom = function (ngScope) {
+		var roomId = ngScope.roomId,
+			hasDownvote = ngScope.hasDownvote,
+			adminFilter = ngScope.adminFilter,
+			roomObj = {
+				id: roomId,
+				settings: {
+					hasDownvote: hasDownvote,
+					adminFilter: adminFilter
+				}
+			};
+
+		send(msgType.CREATE_ROOM, roomObj);
+	}
+
+	var deleteRoom = function (ngScope) {
+		send(msgType.DELETE_ROOM, ngScope.roomId2);
+		ngScope.roomId2 = "";
 	}
 	// end of hacks
 
@@ -161,8 +184,8 @@ var admin = function () {
 	}
 
 	var onclose = function (event) {
-		cleanUp();
 		disconnect();
+		cleanUp();
 
 		if(event.reason.length > 0) {
 			alert(event.reason);
@@ -170,8 +193,8 @@ var admin = function () {
 	}
 
 	var onerror = function (event) {
-		cleanUp();
 		disconnect();
+		cleanUp();
 	}
 
 	return {
