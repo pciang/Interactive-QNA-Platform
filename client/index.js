@@ -14,9 +14,9 @@ var qna = function () {
 	/*
 		Change these variables if you want to run on localhost
 	*/
-	var protocol = 'ws',
-		hostname = 'backendqna-pciang.rhcloud.com',
-		port = '8000',
+	var protocol = config.WS_PROTOCOL,
+		hostname = config.WS_HOSTNAME,
+		port = config.WS_PORT,
 		url = protocol + '://' + hostname + ':' + port + '/';
 
 	// This must match that of server!

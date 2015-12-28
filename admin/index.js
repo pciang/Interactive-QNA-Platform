@@ -91,9 +91,9 @@ var admin = function () {
 	/*
 		Change this variable if you want to run on localhost
 	*/
-	var protocol = 'ws',
-		hostname = 'backendqna-pciang.rhcloud.com',
-		port = '8000',
+	var protocol = config.WS_PROTOCOL,
+		hostname = config.WS_HOSTNAME,
+		port = config.WS_PORT,
 		url = protocol + '://' + hostname + ':' + port + '/',
 		connection = null,
 		hasSecretKey = false,
