@@ -8,12 +8,21 @@ var WebSocketServer = require('ws').Server,
 		port: parseInt(process.env.OPENSHIFT_NODEJS_PORT) || config.WEBSOCKET_PORT
 	});
 
-var Db = require('mongodb').Db,
-	Server = require('mongodb').Server,
-	db = new Db('backendqna'
-		, new Server(process.env.OPENSHIFT_MONGODB_DB_HOST || config.MONGODB_HOST
-			, parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT) || config.MONGODB_PORT
-	));
+// var Db = require('mongodb').Db,
+// 	Server = require('mongodb').Server,
+// 	db = new Db('backendqna'
+// 		, new Server(process.env.OPENSHIFT_MONGODB_DB_HOST || config.MONGODB_HOST
+// 			, parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT) || config.MONGODB_PORT
+// 	));
+
+var MongoClient = require('mongodb').MongoClient,
+	mongoDbCompleteUrl = (process.env.OPENSHIFT_MONGODB_DB_URL || config.MONGODB_URL) + 'backendqna';
+	db = null;
+
+MongoClient.connect(mongoDbCompleteUrl, function (err, dbObj) {
+	// workaround?
+	db = dbObj;
+});
 
 var RoomController = require('./lib/room-controller.js'),
 	roomController = new RoomController(db),
