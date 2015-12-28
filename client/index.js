@@ -215,7 +215,7 @@ var qna = function () {
 	var onclose = function (event) {
 		cleanUp();
 		disconnect();
-
+		
 		if(event.reason.length > 0) {
 			alert(event.reason);
 		}

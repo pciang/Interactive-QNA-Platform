@@ -135,7 +135,9 @@ wss.on('connection' , function (ws) {
 
 				// add client to observers
 				roomController.addObserver(roomId, ws, function (success) {
+					// will never happen, unless catch exception and return false in room-controller
 					if(!success) {
+						ws.close(wsCloseCode, "Unable to add user to room \"" + roomId + "\"!");
 						return;
 					}
 
@@ -202,7 +204,7 @@ wss.on('connection' , function (ws) {
 
 			});
 		} else {
-			ws.close(wsCloseCode, 'Room ID does not exist!');
+			ws.close(wsCloseCode, "Room ID does not exist!");
 		}
 	});
 });
