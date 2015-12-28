@@ -11,9 +11,12 @@ var qna = function () {
 			adminFilter: true
 		};
 
+	/*
+		Change these variables if you want to run on localhost
+	*/
 	var protocol = 'ws',
-		hostname = 'localhost',
-		port = '8080',
+		hostname = 'backendqna-pciang.rhcloud.com',
+		port = '8000',
 		url = protocol + '://' + hostname + ':' + port + '/';
 
 	// This must match that of server!

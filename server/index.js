@@ -1,13 +1,19 @@
+var config = require('./lib/config.js');
+
 var WebSocketServer = require('ws').Server,
 	url = require("url"),
 	assert = require('assert'),
-	wsPort = 8080,
-	wss = new WebSocketServer({port: wsPort});
+	wss = new WebSocketServer({
+		host: process.env.OPENSHIFT_NODEJS_IP || config.WEBSOCKET_HOST,
+		port: parseInt(process.env.OPENSHIFT_NODEJS_PORT) || config.WEBSOCKET_PORT
+	});
 
 var Db = require('mongodb').Db,
 	Server = require('mongodb').Server,
-	mongoDbPort = 27017,
-	db = new Db('qna', new Server('localhost', mongoDbPort));
+	db = new Db('backendqna'
+		, new Server(process.env.OPENSHIFT_MONGODB_DB_HOST || config.MONGODB_HOST
+			, parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT) || config.MONGODB_PORT
+	));
 
 var RoomController = require('./lib/room-controller.js'),
 	roomController = new RoomController(db),

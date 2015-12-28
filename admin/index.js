@@ -88,9 +88,12 @@ var admin = function () {
 
 	var secretKeyPattern = /.{6,}/;
 
+	/*
+		Change this variable if you want to run on localhost
+	*/
 	var protocol = 'ws',
-		hostname = 'localhost',
-		port = '8080',
+		hostname = 'backendqna-pciang.rhcloud.com',
+		port = '8000',
 		url = protocol + '://' + hostname + ':' + port + '/',
 		connection = null,
 		hasSecretKey = false,
