@@ -19,17 +19,27 @@ var MongoClient = require('mongodb').MongoClient,
 	mongoDbCompleteUrl = (process.env.OPENSHIFT_MONGODB_DB_URL || config.MONGODB_URL) + 'backendqna';
 	db = null;
 
+var RoomController = require('./lib/room-controller.js'),
+	AdminController = require('./lib/admin-controller.js'),
+	QuestionController = require('./lib/question-controller.js'),
+	roomController = null;
+	adminController = null;
+	questionController = null;
+
+console.log(mongoDbCompleteUrl);
 MongoClient.connect(mongoDbCompleteUrl, function (err, dbObj) {
 	// workaround?
+	assert.equal(err, null);
+	assert.notEqual(dbObj, null);
 	db = dbObj;
+
+	roomController = new RoomController(db);
+	adminController = new AdminController(db);
+	questionController = new QuestionController(db);
+
+	console.log("Init completed! All is set!");
 });
 
-var RoomController = require('./lib/room-controller.js'),
-	roomController = new RoomController(db),
-	AdminController = require('./lib/admin-controller.js'),
-	adminController = new AdminController(db),
-	QuestionController = require('./lib/question-controller.js'),
-	questionController = new QuestionController(db);
 
 var wsCloseCode = 1000;
 
