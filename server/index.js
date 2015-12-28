@@ -78,6 +78,7 @@ function serveAdmin(ws) {
 		adminController.addAdmin(ws);
 		send(ws, msgType.UNFILTERED_QN_LIST, questionList);
 
+		console.log("An admin has logged in! Number of admins online: %d", adminController.getNumAdmins());
 		ws.on('message', function (msgStr) {
 			var msgObj = JSON.parse(msgStr),
 				content = msgObj.content;
@@ -122,13 +123,18 @@ function serveAdmin(ws) {
 						}
 						send(ws, msgType.CREATE_ROOM, txtMsg);
 					}, function (ws) {
-						ws.close(wsCloseCode, "Room has been deleted!");
+						ws.close(wsCloseCode, "This room has been deleted!");
 					});
 					break;
 				default:
 					// ignore message
 					break;
 			}
+		});
+
+		ws.on('close', function (code, reason) {
+			adminController.removeAdmin(ws);
+			console.log("An admin has left. Number of admins online: %d", adminController.getNumAdmins());
 		});
 	});
 }
@@ -166,6 +172,7 @@ wss.on('connection' , function (ws) {
 						questionList: questionList
 					});
 
+					console.log("A new client has connected. Total client now: %d", wss.clients.length);
 					ws.on('message', function (msgStr) {
 						var msgObj = JSON.parse(msgStr),
 							content = msgObj.content;
@@ -218,6 +225,7 @@ wss.on('connection' , function (ws) {
 
 					ws.on('close', function (code, reason) {
 						roomController.removeObserver(roomId, ws);
+						console.log("A client has left. Number of clients now: %d", wss.clients.length);
 					});
 				});
 

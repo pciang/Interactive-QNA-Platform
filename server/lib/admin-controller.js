@@ -47,4 +47,8 @@ module.exports = function (db) {
 	this.notifyAll = function (callback) {
 		admins.forEach(callback);
 	}
+
+	this.getNumAdmins = function () {
+		return admins.length;
+	}
 };

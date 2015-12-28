@@ -203,7 +203,12 @@ module.exports = function (db) {
 		});
 
 		if(roomId in rooms) {
-			rooms[roomId].observers.forEach(callback2);
+			// safer choice
+			var observers = room[roomId].observers;
+			for(var i = 0, size = observers.length; i < size; ++i) {
+				callback2(observers[i]);
+			}
+
 			delete rooms[roomId];
 		}
 	}
