@@ -9,7 +9,8 @@ var qna = function () {
 		roomSettings = {
 			hasDownvote: true,
 			adminFilter: true
-		};
+		},
+		loadingOverlay = document.getElementById("loading-overlay");
 
 	/*
 		Change these variables if you want to run on localhost
@@ -29,7 +30,7 @@ var qna = function () {
 
 	// initialize angular
 	var angularApp = angular.module('qna', []);
-	angularApp.controller('main', function ($scope) {
+	angularApp.controller('main', function ($scope, $interval) {
 		$scope.questionList = [];
 		$scope.enableAddQuestion = false;
 		$scope.isConnected = isConnected;
@@ -55,12 +56,34 @@ var qna = function () {
 		$scope.downvote = downvote.bind(undefined, $scope);
 		upvoteQuestion = upvoteQuestion.bind(undefined, $scope);
 		downvoteQuestion = downvoteQuestion.bind(undefined, $scope);
+
+		$scope.refreshInterval = 12000; // 12s
+		$scope.transitionTime = 2000; // 2s
+		
+		startPeriodicRefresh = startPeriodicRefresh.bind(undefined, $scope, $interval);
+		stopPeriodicRefresh = stopPeriodicRefresh.bind(undefined, $scope, $interval);
 	});
 
 	// hacks for Angular
+	var startPeriodicRefresh = function (ngScope, ngInterval) {
+		ngScope.promise = ngInterval(function () {
+			toggleLoadingSpinner();
+			// ngScope.$apply();
+			setTimeout(function () {
+				toggleLoadingSpinner();
+			}, ngScope.transitionTime)
+		}, ngScope.refreshInterval);
+	}
+
+	var stopPeriodicRefresh = function (ngScope, ngInterval) {
+		ngInterval.cancel(ngScope.promise);
+	}
+
 	var addQuestion = function (ngScope, question) {
 		ngScope.questionList.push(question);
+
 		ngScope.$apply();
+		// ngScope.toggleDirty();
 	};
 
 	var enableAddQuestion = function (ngScope) {
@@ -118,7 +141,12 @@ var qna = function () {
 			dirty = true;
 		}
 
-		if(dirty) {
+		// if(dirty) {
+		// 	ngScope.$apply();
+		// }
+
+		// Better fix?
+		if(dirty && currentUsername == username) {
 			ngScope.$apply();
 		}
 	};
@@ -151,11 +179,24 @@ var qna = function () {
 			dirty = true;
 		}
 
-		if(dirty) {
+		// if(dirty) {
+		// 	ngScope.$apply();
+		// }
+
+		// Better fix?
+		if(dirty && currentUsername == username) {
 			ngScope.$apply();
 		}
 	};
 	// end of hacks
+
+	var toggleLoadingSpinner = function () {
+		if(loadingOverlay.style.display == "none") {
+			loadingOverlay.style.display = "block";
+		} else {
+			loadingOverlay.style.display = "none";
+		}
+	}
 
 	var isAttempting = function () {
 		return connection != null;
@@ -196,6 +237,7 @@ var qna = function () {
 		// console.log(event);
 		cleanUp();
 		enableAddQuestion();
+		startPeriodicRefresh();
 	};
 
 	var onmessage = function (event) {
@@ -227,6 +269,7 @@ var qna = function () {
 			alert(event.reason);
 		}
 
+		stopPeriodicRefresh();
 		cleanUp();
 		disconnect();
 	};
@@ -234,6 +277,7 @@ var qna = function () {
 	var onerror = function (event) {
 		console.log("error:", event);
 
+		stopPeriodicRefresh();
 		cleanUp();
 		disconnect();
 	};
