@@ -254,7 +254,11 @@ var qna = function () {
 
 	var sendQuestion = function (questionBody) {
 		if(isConnected()) {
-			// console.log("Ask: %s", questionBody);
+			if(questionBody.length < 4) {
+				alert("Ask something! (At least 4 characters)")
+				return;
+			}
+
 			var msgObj = {
 				asker: currentUsername,
 				roomId: currentRoomId,
