@@ -163,7 +163,7 @@ var qna = function () {
 
 	var connect = function (username, roomId) {
 		if(isAttempting()) {
-			alert("Please be patient! Your browser is attempting to connect, or the connection has been established.");
+			alert("Please be patient!\nYour browser is attempting to connect, or the connection has been established.");
 			return;
 		}
 

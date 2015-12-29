@@ -23,6 +23,8 @@ module.exports = function (db) {
 			db.collection(roomColName, function (err, col) {
 				col.findOne({id: roomId}, function (err, document) {
 					db.close(); // document is retrieved, safe to close
+
+					console.log("hasRoom method result: %d", document == null ? 0 : 1);
 					callback(document != null);
 				});
 			});
