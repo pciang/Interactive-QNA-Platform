@@ -70,7 +70,7 @@ function serveAdmin(ws) {
 		secretKey = location.query['key'];
 
 	if(!adminController.verifyKey(secretKey)) {
-		ws.close(wsCloseCode, "Wrong secret key!");
+		ws.close(); // providing code and reason isn't useful since it will be ignored
 		return;
 	}
 
@@ -231,8 +231,7 @@ wss.on('connection' , function (ws) {
 
 			});
 		} else {
-			console.log("Notifying user \"%s\" that the room does not exist!", username);
-			ws.close(wsCloseCode, "Room ID does not exist!");
+			ws.close(); // providing code and reason isn't useful since it will be ignored
 		}
 	});
 });

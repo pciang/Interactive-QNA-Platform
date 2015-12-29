@@ -23,8 +23,6 @@ module.exports = function (db) {
 			db.collection(roomColName, function (err, col) {
 				col.findOne({id: roomId}, function (err, document) {
 					db.close(); // document is retrieved, safe to close
-
-					console.log("hasRoom method result: %d", document == null ? 0 : 1);
 					callback(document != null);
 				});
 			});
@@ -51,6 +49,7 @@ module.exports = function (db) {
 
 	this.addObserver = function (roomId, ws, callback) {
 		if(!(roomId in rooms)) {
+			console.log("Room \"%s\" has been created temporarily!", roomId);
 			rooms[roomId] = {
 				settings: defaultSettings,
 				observers: []
@@ -79,6 +78,12 @@ module.exports = function (db) {
 		var observers = rooms[roomId].observers,
 			idx = observers.indexOf(ws);
 		observers.splice(idx, 1);
+
+		// better logic
+		if(observers.length == 0) {
+			delete rooms[roomId];
+			console.log("Room \"%s\" has been removed locally!", roomId);
+		}
 	}
 
 	this.getSettings = function (roomId) {
@@ -210,8 +215,6 @@ module.exports = function (db) {
 			for(var i = 0, size = observers.length; i < size; ++i) {
 				callback2(observers[i]);
 			}
-
-			delete rooms[roomId];
 		}
 	}
 }
