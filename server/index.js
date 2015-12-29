@@ -172,7 +172,7 @@ wss.on('connection' , function (ws) {
 						questionList: questionList
 					});
 
-					console.log("A new client has connected. Total client now: %d", wss.clients.length);
+					console.log("A new user \"%s\" has connected. Total client now: %d", username, wss.clients.length);
 					ws.on('message', function (msgStr) {
 						var msgObj = JSON.parse(msgStr),
 							content = msgObj.content;
