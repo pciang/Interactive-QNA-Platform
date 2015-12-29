@@ -222,7 +222,7 @@ var qna = function () {
 	};
 
 	var onclose = function (event) {
-		console.log("close", event);
+		console.log("close:", event);
 		if(event.reason.length > 0) {
 			alert(event.reason);
 		}
@@ -232,7 +232,7 @@ var qna = function () {
 	};
 
 	var onerror = function (event) {
-		console.log("error", event);
+		console.log("error:", event);
 
 		cleanUp();
 		disconnect();
