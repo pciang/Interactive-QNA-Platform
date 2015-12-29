@@ -225,7 +225,7 @@ wss.on('connection' , function (ws) {
 
 					ws.on('close', function (code, reason) {
 						roomController.removeObserver(roomId, ws);
-						console.log("A client has left. Number of clients now: %d", wss.clients.length);
+						console.log("User \"%s\" has left. Number of clients now: %d", username, wss.clients.length);
 					});
 				});
 
