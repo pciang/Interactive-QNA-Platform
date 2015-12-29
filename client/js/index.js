@@ -157,7 +157,16 @@ var qna = function () {
 	};
 	// end of hacks
 
+	var isAttempting = function () {
+		return connection != null;
+	};
+
 	var connect = function (username, roomId) {
+		if(isAttempting()) {
+			alert("Please be patient! Your browser is attempting to connect, or the connection has been established.");
+			return;
+		}
+
 		if(!usernamePattern.test(username)) {
 			alert("Username must adhere to regex rule " + usernamePattern);
 			return;
@@ -168,7 +177,7 @@ var qna = function () {
 			return;
 		}
 
-		disconnect();
+		// disconnect();
 
 		// for future references
 		currentUsername = username;
