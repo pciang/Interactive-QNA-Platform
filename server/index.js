@@ -231,6 +231,7 @@ wss.on('connection' , function (ws) {
 
 			});
 		} else {
+			console.log("Notifying user \"%s\" that the room does not exist!", username);
 			ws.close(wsCloseCode, "Room ID does not exist!");
 		}
 	});
