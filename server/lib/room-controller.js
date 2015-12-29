@@ -206,7 +206,7 @@ module.exports = function (db) {
 
 		if(roomId in rooms) {
 			// safer choice
-			var observers = room[roomId].observers;
+			var observers = rooms[roomId].observers;
 			for(var i = 0, size = observers.length; i < size; ++i) {
 				callback2(observers[i]);
 			}

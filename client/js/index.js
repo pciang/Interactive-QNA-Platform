@@ -222,15 +222,18 @@ var qna = function () {
 	};
 
 	var onclose = function (event) {
-		cleanUp();
-		disconnect();
-		
+		console.log("close", event);
 		if(event.reason.length > 0) {
 			alert(event.reason);
 		}
+
+		cleanUp();
+		disconnect();
 	};
 
 	var onerror = function (event) {
+		console.log("error", event);
+
 		cleanUp();
 		disconnect();
 	};
